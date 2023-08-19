@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 import type { NextRequest } from 'next/server';
 
 export const GET = async (request: NextRequest) => {
+  console.log('GET');
   const authRequest = authentication.handleRequest({ request, cookies });
   const session = await authRequest.validate();
   if (session) {
@@ -20,7 +21,6 @@ export const GET = async (request: NextRequest) => {
   const url = new URL(request.url);
   const state = url.searchParams.get('state');
   const code = url.searchParams.get('code');
-  console.log(storedState, state, code);
   // validate state
   if (!storedState || !state || storedState !== state || !code) {
     return new Response(null, {
@@ -39,7 +39,6 @@ export const GET = async (request: NextRequest) => {
       });
       return user;
     };
-    console.log(googleUser);
 
     const user = await getUser();
     const session = await authentication.createSession({
@@ -54,7 +53,6 @@ export const GET = async (request: NextRequest) => {
       },
     });
   } catch (e) {
-    console.log(e);
     if (e instanceof OAuthRequestError) {
       // invalid code
       return new Response(null, {

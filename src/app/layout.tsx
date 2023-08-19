@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     apple: ['/apple-touch-icon.png'],
     shortcut: ['/apple-touch-icon.png'],
   },
-  manifest: '/site.webmanifest',
+  // manifest: '/site.webmanifest',
   referrer: 'no-referrer',
   themeColor: '#ffffff',
 };
