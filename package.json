@@ -9,7 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@lucia-auth/adapter-mysql": "^2.0.0",
+    "@lucia-auth/adapter-prisma": "^3.0.1",
     "@planetscale/database": "^1.10.0",
+    "@prisma/client": "^5.1.1",
+    "@radix-ui/react-slot": "^1.0.2",
     "@t3-oss/env-nextjs": "^0.6.0",
     "@types/node": "20.5.0",
     "@types/react": "18.2.20",
@@ -22,6 +26,7 @@
     "eslint-config-next": "13.4.17",
     "lucia": "^2.3.0",
     "lucide-react": "^0.268.0",
+    "mysql2": "^3.6.0",
     "next": "13.4.17",
     "postcss": "8.4.28",
     "postgres": "^3.3.5",
@@ -34,6 +39,6 @@
     "zod": "^3.22.1"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.19.12"
+    "prisma": "^5.1.1"
   }
 }
