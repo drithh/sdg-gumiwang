@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ducanh2912/next-pwa": "^9.4.0",
     "@hookform/resolvers": "^3.2.0",
     "@lucia-auth/adapter-mysql": "^2.0.0",
     "@lucia-auth/adapter-prisma": "^3.0.1",
