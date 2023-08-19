@@ -1,20 +1,20 @@
-import { lucia } from 'lucia';
-import { prisma } from '@lucia-auth/adapter-prisma';
-import { PrismaClient } from '@prisma/client';
-import { google, GoogleUser } from '@lucia-auth/oauth/providers';
-import { nextjs } from 'lucia/middleware';
-import { env } from '~/env.mjs';
-import { cache } from 'react';
-import { cookies } from 'next/headers';
+import { lucia } from "lucia";
+import { prisma } from "@lucia-auth/adapter-prisma";
+import { PrismaClient } from "@prisma/client";
+import { google, GoogleUser } from "@lucia-auth/oauth/providers";
+import { nextjs } from "lucia/middleware";
+import { env } from "~/env.mjs";
+import { cache } from "react";
+import { cookies } from "next/headers";
 const client = new PrismaClient();
 
 export const authentication = lucia({
   adapter: prisma(client, {
-    user: 'user', // model User {}
-    key: 'key', // model Key {}
-    session: 'session', // model Session {}
+    user: "user", // model User {}
+    key: "key", // model Key {}
+    session: "session", // model Session {}
   }),
-  env: env.NODE_ENV === 'production' ? 'PROD' : 'DEV',
+  env: env.NODE_ENV === "production" ? "PROD" : "DEV",
   middleware: nextjs(),
   sessionCookie: {
     expires: false,
@@ -33,7 +33,8 @@ export const authentication = lucia({
   // },
   getUserAttributes: (data) => {
     return {
-      googleUsername: data.id,
+      email: data.email,
+      name: data.name,
     };
   },
   sessionExpiresIn: {
@@ -53,8 +54,8 @@ export const googleAuthentication = google(authentication, {
   clientSecret: env.GOOGLE_CLIENT_SECRET,
   redirectUri: env.GOOGLE_REDIRECT_URI,
   scope: [
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'https://www.googleapis.com/auth/userinfo.email',
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "https://www.googleapis.com/auth/userinfo.email",
   ],
 });
 

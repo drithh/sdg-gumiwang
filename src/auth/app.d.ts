@@ -2,9 +2,10 @@
 
 /// <reference types="lucia" />
 declare namespace Lucia {
-  type Auth = import('./lucia.js').Auth;
+  type Auth = import("./lucia.js").Auth;
   type DatabaseUserAttributes = {
     email: string;
+    name: string;
   };
   type DatabaseSessionAttributes = {};
 }

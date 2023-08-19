@@ -1,26 +1,26 @@
-import { authentication, googleAuthentication } from '~/auth/lucia';
-import { OAuthRequestError } from '@lucia-auth/oauth';
-import { cookies } from 'next/headers';
+import { authentication, googleAuthentication } from "~/auth/lucia";
+import { OAuthRequestError } from "@lucia-auth/oauth";
+import { cookies } from "next/headers";
 
-import type { NextRequest } from 'next/server';
+import type { NextRequest } from "next/server";
 
 export const GET = async (request: NextRequest) => {
-  console.log('GET');
+  console.log("GET");
   const authRequest = authentication.handleRequest({ request, cookies });
   const session = await authRequest.validate();
   if (session) {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: '/',
+        Location: "/",
       },
     });
   }
   const cookieStore = cookies();
-  const storedState = cookieStore.get('google_oauth_state')?.value;
+  const storedState = cookieStore.get("google_oauth_state")?.value;
   const url = new URL(request.url);
-  const state = url.searchParams.get('state');
-  const code = url.searchParams.get('code');
+  const state = url.searchParams.get("state");
+  const code = url.searchParams.get("code");
   // validate state
   if (!storedState || !state || storedState !== state || !code) {
     return new Response(null, {
@@ -34,7 +34,8 @@ export const GET = async (request: NextRequest) => {
       if (existingUser) return existingUser;
       const user = await createUser({
         attributes: {
-          email: googleUser.email ?? '',
+          email: googleUser.email ?? "",
+          name: googleUser.name ?? "",
         },
       });
       return user;
@@ -49,7 +50,7 @@ export const GET = async (request: NextRequest) => {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: '/',
+        Location: "/",
       },
     });
   } catch (e) {
