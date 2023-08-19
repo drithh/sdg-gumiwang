@@ -2,19 +2,20 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "mysql"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
-    relationMode = "prisma"
-}model User {
-  id           String    @id @unique
+  provider     = "mysql"
+  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+model User {
+  id String @id @unique
 
   auth_session Session[]
   key          Key[]
@@ -37,4 +38,265 @@ model Key {
   user            User    @relation(references: [id], fields: [user_id], onDelete: Cascade)
 
   @@index([user_id])
+}
+
+model Enumerator {
+  id          Int        @id @unique @default(autoincrement())
+  nama        String
+  alamat      String
+  hpTelepon  String
+  keluarga Keluarga[]
+}
+
+
+model Keluarga {
+  id         Int              @id @unique @default(autoincrement())
+  nomorKartuKeluarga String @unique
+  nomorIndukKependudukan String
+
+  lokasi Lokasi?
+  permukiman Permukiman?
+  individu Individu[]
+  
+  
+  enumerator Enumerator @relation(fields: [enumeratorId], references: [id])
+  enumeratorId Int
+  @@index([enumeratorId])
+}
+
+model Lokasi {
+  id         Int              @id @unique  @default(autoincrement())
+  provinsi   String
+  kabupatenKota  String
+  kecamatan  String
+  desaKelurahan  String
+  rt String
+  rw String
+  nama String
+  alamat String
+  nomorHp String?
+  nomorRumah String?
+
+  keluarga Keluarga? @relation(fields: [keluargaId], references: [id])
+  keluargaId Int @unique
+
+  @@index([keluargaId])
+}
+
+model Permukiman {
+  id         Int              @id @unique @default(autoincrement())
+  tempatTinggal String
+  statusLahanTempatTinggal String
+  luasLantai Int
+  luasLahan Int?
+  jenisLantai String
+  dinding String
+  jendela String
+  atap String
+  penerangan String
+  energiMemasak String
+  sumberKayuBakar String?
+  tempatPembuanganSampah String
+  fasilitasMCK String
+  fasilitasBuangAirBesar String
+  sumberAirMandi String
+  sumberAirMinum String
+  tempatPembuanganLimbahCair String
+  rumahBeradaDibawahSutetSuttSuttas String
+  rumahDiBantaranSungai String
+  rumahDiLerengGunung String
+  kondisiRumah String
+
+  bltDanaDesa Boolean
+  programKeluargaHarapan Boolean
+  bantuanSosialTunai Boolean
+  bantuanPresiden Boolean
+  bantuanUmkm Boolean
+  bantuanUntukPekerja Boolean
+  bantuanPendidikanAnak Boolean
+  lainnya Boolean
+
+  keluarga Keluarga? @relation(fields: [keluargaId], references: [id])
+  keluargaId Int @unique
+
+  @@index([keluargaId])
+}
+
+model Individu {
+  id         Int              @id @unique @default(autoincrement())
+  nomorKartuKeluarga String
+  nomorIndukKependudukan String
+  nama String
+  jenisKelamin String
+  tempatLahir String
+  tanggalLahir DateTime
+  statusPernikahan String
+  agama String
+  sukuBangsa String
+  wargaNegara String
+
+  nomorHp String?
+  nomorWhatsapp String?
+  email String?
+  facebook String?
+  twitter String?
+  instagram String?
+
+  pekerjaan Pekerjaan?
+  kesehatan Kesehatan?
+  pendidikan Pendidikan?
+
+
+  keluarga Keluarga @relation(fields: [keluargaId], references: [id])
+  keluargaId Int
+  @@index([keluargaId])
+}
+
+model Pekerjaan {
+  id         Int              @id @unique @default(autoincrement())
+  kondisiPekerjaan String
+  pekerjaanUtama String
+  jaminanSosialTenagaKerja String
+
+  penghasilanSetahunTerakhir PenghasilanSetahunTerakhir[]
+
+  individu Individu? @relation(fields: [individuId], references: [id])
+  individuId Int @unique
+
+  @@index([individuId])
+}
+
+model PenghasilanSetahunTerakhir {
+  id         Int              @id @unique @default(autoincrement())
+  sumberPenghasilan SumberPenghasilan
+  jumlah Int
+  satuan String
+  penghasilanSetahunTerakhir String
+  diEkspor String
+
+  pekerjaan Pekerjaan @relation(fields: [pekerjaanId], references: [id])
+  pekerjaanId Int @unique
+
+  @@index([pekerjaanId])
+}
+
+model Kesehatan {
+  id        Int              @id @unique @default(autoincrement())
+  muntaber Boolean
+  demamBerdarah Boolean
+  campak Boolean
+  malaria Boolean
+  fluBurung Boolean
+  covid19 Boolean
+  hepatitisB Boolean
+  hepatitisE Boolean
+  difteri Boolean
+  chikungunya Boolean
+  leptospirosis Boolean
+  kolera Boolean
+  giziBuruk Boolean
+  jantung Boolean
+  tbcParuParu Boolean
+  kanker Boolean
+  diabetes Boolean
+  lumpuh Boolean
+  lainnya Boolean
+
+  rumahSakit Int
+  rumahSakitBersalin Int
+  puskesmasRawatInap Int
+  puskesmasTanpaRawatInap Int
+  puskesmasPembantu Int
+  poliklinik Int
+  tempatPraktekDokter Int
+  rumahBersalin Int
+  tempatPraktekBidan Int
+  poskesdes Int
+  polindes Int
+  apotek Int
+  tokoKhususObat Int
+  posyandu Int
+  posbindu Int
+  tempatPraktekDukunBayi Int
+
+  jaminaSosialKesehatan String
+
+  tunanetra Boolean
+  tunarungu Boolean
+  tunawicara Boolean
+  tunarunguWicara Boolean
+  tunadaksa Boolean
+  tunagrahita Boolean
+  tunalaras Boolean
+  cacatKusta Boolean
+  cacatGanda Boolean
+  dipasung Boolean
+
+  individu Individu? @relation(fields: [individuId], references: [id])
+  individuId Int @unique
+
+  @@index([individuId])
+}
+
+model Pendidikan {
+  id        Int              @id @unique @default(autoincrement())
+  pendidikanTertinggi String
+  bahasaDiRumah String
+  bahasaFormal String
+  kerjaBakti Int
+  siskamling Int
+  pestaRakyat Int
+  menolongWargaMengalamiKematian Int
+  menolongWargaSedangSakit Int
+  menolongWargaKecelakaan Int
+
+  individu Individu? @relation(fields: [individuId], references: [id])
+  individuId Int @unique
+
+  @@index([individuId])
+}
+
+enum SumberPenghasilan {
+  Padi
+  Palawija
+  Hortikultura
+  Karet
+  KelapaSawit
+  Kopi
+  Kakao
+  Kelapa
+  Lada
+  Cengkeh
+  Tembakau
+  Tebu
+  SapiPotong
+  SusuSapi
+  Domba
+  TernakBesarLainnya
+  AyamPedaging
+  TelurAyam
+  TernakKecilLainnya
+  PerikananTangkap
+  PerikananBudidaya
+  Bambu
+  BudidayaTanamanKehutanan
+  PemungutanHasilHutan
+  PenangkapanSatwaLiarDarat
+  PenangkapanSatwaLiarAir
+  JasaPertanian
+  PertambanganDanPenggalian
+  IndustriKerajinan
+  IndustriPengolahan
+  Perdagangan
+  WarungDanRumahMakan
+  Angkutan
+  Komunikasi
+  JasaDiLuarPertanian
+  Lainnya
+  KaryawanTetap
+  KaryawanTidakTetap
+  TNI
+  PNS
+  TKI
+  Sumbangan
 }
