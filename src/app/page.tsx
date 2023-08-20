@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { getPageSession } from "~/auth/lucia";
+import { getPageSession } from "~/server/auth/lucia";
 
 export default async function Home() {
   const session = await getPageSession();

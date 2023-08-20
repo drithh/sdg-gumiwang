@@ -1,4 +1,4 @@
-import { getPageSession } from "~/auth/lucia";
+import { getPageSession } from "~/server/auth/lucia";
 import { redirect } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import Image from "next/image";

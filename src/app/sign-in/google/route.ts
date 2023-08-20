@@ -1,7 +1,7 @@
-import { authentication, googleAuthentication } from '~/auth/lucia';
-import { cookies } from 'next/headers';
+import { authentication, googleAuthentication } from "~/server/auth/lucia";
+import { cookies } from "next/headers";
 
-import type { NextRequest } from 'next/server';
+import type { NextRequest } from "next/server";
 
 export const GET = async (request: NextRequest) => {
   const authRequest = authentication.handleRequest({ request, cookies });
@@ -10,16 +10,16 @@ export const GET = async (request: NextRequest) => {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: '/',
+        Location: "/",
       },
     });
   }
   const [url, state] = await googleAuthentication.getAuthorizationUrl();
   const cookieStore = cookies();
-  cookieStore.set('google_oauth_state', state, {
+  cookieStore.set("google_oauth_state", state, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    path: '/',
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
     maxAge: 60 * 60,
   });
 

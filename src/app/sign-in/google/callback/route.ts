@@ -1,4 +1,4 @@
-import { authentication, googleAuthentication } from "~/auth/lucia";
+import { authentication, googleAuthentication } from "~/server/auth/lucia";
 import { OAuthRequestError } from "@lucia-auth/oauth";
 import { cookies } from "next/headers";
 
