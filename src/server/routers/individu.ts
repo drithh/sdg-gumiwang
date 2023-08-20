@@ -8,7 +8,7 @@ import {
   transformFilterModel,
 } from "~/lib/filter";
 
-export const rumahTanggaRouter = createTRPCRouter({
+export const individuRouter = createTRPCRouter({
   getKeluarga: protectedProcedure
     .input(
       z.object({

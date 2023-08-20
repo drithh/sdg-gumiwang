@@ -178,7 +178,7 @@ model PenghasilanSetahunTerakhir {
   diEkspor String
 
   pekerjaan Pekerjaan @relation(fields: [pekerjaanId], references: [id])
-  pekerjaanId Int @unique
+  pekerjaanId Int 
 
   @@index([pekerjaanId])
 }
@@ -222,7 +222,7 @@ model Kesehatan {
   posbindu Int
   tempatPraktekDukunBayi Int
 
-  jaminaSosialKesehatan String
+  jaminanSosialKesehatan String
 
   tunanetra String
   tunarungu String

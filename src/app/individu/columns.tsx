@@ -229,7 +229,8 @@ export const columns = [
         filterParams: {
           values: [
             "Ledeng/perpipaan berbayar/air isi ulang/kemasan",
-            "Mata air/perpipaan/sumur",
+            "Perpipaan",
+            "Mata air/sumur",
             "Sungai, danau, embung",
             "Tadah air hujan",
             "Lainnya",

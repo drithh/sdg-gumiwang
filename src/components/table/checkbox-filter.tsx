@@ -29,9 +29,6 @@ const Filter = forwardRef((props: CustomFilterValue, ref: any) => {
         return params.data[field] == filterState;
       },
       getModel() {
-        if (filterState.length == 0) {
-          return undefined;
-        }
         return {
           filterType: "checkbox",
           filter: filterState,
