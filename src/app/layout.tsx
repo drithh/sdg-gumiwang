@@ -5,6 +5,7 @@ import { ThemeProvider } from "~/components/theme-provider";
 import Navigation from "./navigation";
 import { getPageSession } from "~/server/auth/lucia";
 import Providers from "./providers";
+import { redirect } from "next/navigation";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
   referrer: "no-referrer",
   themeColor: "#ffffff",
 };
-
+import { usePathname } from "next/navigation";
 export default async function RootLayout({
   children,
 }: {

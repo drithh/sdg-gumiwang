@@ -11,4 +11,4 @@ const config = {
   /** ... */
 };
 
-export default withPWA(config);
+export default config;
