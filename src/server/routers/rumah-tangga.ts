@@ -26,55 +26,27 @@ export const rumahTanggaRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const sortModelPermukiman = input.sortModel?.find(
-        (sort) => sort.colId.split(".")[0] === "permukiman",
-      );
-      const sortModelLokasi = input.sortModel?.find(
-        (sort) => sort.colId.split(".")[0] === "lokasi",
-      );
-      const sortModelKeluarga = input.sortModel?.filter(
-        (sort) =>
-          sort.colId.split(".")[0] !== "permukiman" &&
-          sort.colId.split(".")[0] !== "lokasi",
-      )[0];
+      const orderBy = input.sortModel?.reduce((acc, sort) => {
+        const [colType, colProp] = sort.colId.split(".");
+        if (!sort.colId.includes(".")) {
+          return { ...acc, [sort.colId]: sort.sort };
+        }
+        return { ...acc, [colType]: { [colProp]: sort.sort } };
+      }, {});
 
-      const orderBy = {
-        ...(sortModelPermukiman && {
-          permukiman: {
-            [sortModelPermukiman.colId.split(".")[1]]: sortModelPermukiman.sort,
-          },
-        }),
-        ...(sortModelLokasi && {
-          lokasi: {
-            [sortModelLokasi.colId.split(".")[1]]: sortModelLokasi.sort,
-          },
-        }),
-        ...(sortModelKeluarga && {
-          [sortModelKeluarga.colId]: sortModelKeluarga.sort,
-        }),
-      };
-
-      console.log(input.filterModel);
       const filters = transformFilterModel(input.filterModel ?? {});
 
-      const filterModelPermukiman = filters
-        .filter((filter) => filter.key.split(".")[0] === "permukiman")
-        .map((filter) => ({
-          ...filter,
-          key: filter.key.split(".")[1],
-        }));
+      function filterModelByType(type: string) {
+        return filters
+          .filter((filter) => filter.key.split(".")[0] === type)
+          .map((filter) => ({ ...filter, key: filter.key.split(".")[1] }));
+      }
 
-      const filterModelLokasi = filters
-        .filter((filter) => filter.key.split(".")[0] === "lokasi")
-        .map((filter) => ({
-          ...filter,
-          key: filter.key.split(".")[1],
-        }));
-
+      const filterModelPermukiman = filterModelByType("permukiman");
+      const filterModelLokasi = filterModelByType("lokasi");
       const filterModelKeluarga = filters.filter(
         (filter) => !filter.key.includes("."),
       );
-      console.log(filterModelPermukiman);
 
       const processFilters = (filters: TransformedFilterInfo[]) => {
         const result: Record<string, Record<string, string | string[]>> = {};

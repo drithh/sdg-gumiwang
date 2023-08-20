@@ -1,4 +1,8 @@
-import { createTRPCRouter, protectedProcedure } from "~/server/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/trpc";
 import { z } from "zod";
 import {
   TransformedFilterInfo,
@@ -9,7 +13,7 @@ import {
 } from "~/lib/filter";
 
 export const individuRouter = createTRPCRouter({
-  getKeluarga: protectedProcedure
+  getIndividu: publicProcedure
     .input(
       z.object({
         startRow: z.number().optional(),
@@ -26,55 +30,35 @@ export const individuRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const sortModelPermukiman = input.sortModel?.find(
-        (sort) => sort.colId.split(".")[0] === "permukiman",
-      );
-      const sortModelLokasi = input.sortModel?.find(
-        (sort) => sort.colId.split(".")[0] === "lokasi",
-      );
-      const sortModelKeluarga = input.sortModel?.filter(
-        (sort) =>
-          sort.colId.split(".")[0] !== "permukiman" &&
-          sort.colId.split(".")[0] !== "lokasi",
-      )[0];
-
-      const orderBy = {
-        ...(sortModelPermukiman && {
-          permukiman: {
-            [sortModelPermukiman.colId.split(".")[1]]: sortModelPermukiman.sort,
-          },
-        }),
-        ...(sortModelLokasi && {
-          lokasi: {
-            [sortModelLokasi.colId.split(".")[1]]: sortModelLokasi.sort,
-          },
-        }),
-        ...(sortModelKeluarga && {
-          [sortModelKeluarga.colId]: sortModelKeluarga.sort,
-        }),
-      };
+      const orderBy = input.sortModel?.reduce((acc, sort) => {
+        const [colType, colProp] = sort.colId.split(".");
+        if (
+          colType === "pendidikan" ||
+          colType === "kesehatan" ||
+          colType === "pekerjaan"
+        ) {
+        }
+        if (!sort.colId.includes(".")) {
+          return { ...acc, [sort.colId]: sort.sort };
+        }
+        return { ...acc, [colType]: { [colProp]: sort.sort } };
+      }, {});
 
       console.log(input.filterModel);
       const filters = transformFilterModel(input.filterModel ?? {});
 
-      const filterModelPermukiman = filters
-        .filter((filter) => filter.key.split(".")[0] === "permukiman")
-        .map((filter) => ({
-          ...filter,
-          key: filter.key.split(".")[1],
-        }));
+      function filterModelByType(type: string) {
+        return filters
+          .filter((filter) => filter.key.split(".")[0] === type)
+          .map((filter) => ({ ...filter, key: filter.key.split(".")[1] }));
+      }
 
-      const filterModelLokasi = filters
-        .filter((filter) => filter.key.split(".")[0] === "lokasi")
-        .map((filter) => ({
-          ...filter,
-          key: filter.key.split(".")[1],
-        }));
-
-      const filterModelKeluarga = filters.filter(
+      const filterModelPendidikan = filterModelByType("pendidikan");
+      const filterModelKesehatan = filterModelByType("kesehatan");
+      const filterModelPekerjaan = filterModelByType("pekerjaan");
+      const filterModelIndividu = filters.filter(
         (filter) => !filter.key.includes("."),
       );
-      console.log(filterModelPermukiman);
 
       const processFilters = (filters: TransformedFilterInfo[]) => {
         const result: Record<string, Record<string, string | string[]>> = {};
@@ -102,32 +86,37 @@ export const individuRouter = createTRPCRouter({
       };
 
       const allWhere = {
-        ...(filterModelKeluarga.length > 0 &&
-          processFilters(filterModelKeluarga)),
-        permukiman: {
-          ...(filterModelPermukiman.length > 0 &&
-            processFilters(filterModelPermukiman)),
+        ...(filterModelIndividu.length > 0 &&
+          processFilters(filterModelIndividu)),
+        pendidikan: {
+          ...(filterModelPendidikan.length > 0 &&
+            processFilters(filterModelPendidikan)),
         },
-        lokasi: {
-          ...(filterModelLokasi.length > 0 &&
-            processFilters(filterModelLokasi)),
+        kesehatan: {
+          ...(filterModelKesehatan.length > 0 &&
+            processFilters(filterModelKesehatan)),
+        },
+        pekerjaan: {
+          ...(filterModelPekerjaan.length > 0 &&
+            processFilters(filterModelPekerjaan)),
         },
       };
 
       console.log(allWhere);
-      const keluarga = await ctx.prisma.keluarga.findMany({
+      const individu = await ctx.prisma.individu.findMany({
         skip: input.startRow,
         take: (input?.endRow ?? 0 - (input?.startRow ?? 0)) || 100,
         where: allWhere,
 
         orderBy: orderBy,
         include: {
-          lokasi: true,
-          permukiman: true,
+          pendidikan: true,
+          kesehatan: true,
+          pekerjaan: true,
         },
       });
-      console.log(keluarga.length);
+      console.log(individu.length);
 
-      return keluarga;
+      return individu;
     }),
 });

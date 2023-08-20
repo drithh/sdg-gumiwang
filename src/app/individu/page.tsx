@@ -15,7 +15,7 @@ export default function DemoPage() {
     getRows(params) {
       const { startRow, endRow, filterModel, sortModel } = params;
       console.log("params", params);
-      api.rumahTangga.getKeluarga
+      api.individu.getIndividu
         .query({
           startRow,
           endRow,
