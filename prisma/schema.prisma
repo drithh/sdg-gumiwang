@@ -5,6 +5,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
+
 datasource db {
   provider     = "mysql"
   // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
@@ -109,14 +110,14 @@ model Permukiman {
   rumahDiLerengGunung String
   kondisiRumah String
 
-  bltDanaDesa Boolean
-  programKeluargaHarapan Boolean
-  bantuanSosialTunai Boolean
-  bantuanPresiden Boolean
-  bantuanUmkm Boolean
-  bantuanUntukPekerja Boolean
-  bantuanPendidikanAnak Boolean
-  lainnya Boolean
+  bltDanaDesa String
+  programKeluargaHarapan String
+  bantuanSosialTunai String
+  bantuanPresiden String
+  bantuanUmkm String
+  bantuanUntukPekerja String
+  bantuanPendidikanAnak String
+  lainnya String
 
   keluarga Keluarga? @relation(fields: [keluargaId], references: [id])
   keluargaId Int @unique
@@ -184,25 +185,25 @@ model PenghasilanSetahunTerakhir {
 
 model Kesehatan {
   id        Int              @id @unique @default(autoincrement())
-  muntaber Boolean
-  demamBerdarah Boolean
-  campak Boolean
-  malaria Boolean
-  fluBurung Boolean
-  covid19 Boolean
-  hepatitisB Boolean
-  hepatitisE Boolean
-  difteri Boolean
-  chikungunya Boolean
-  leptospirosis Boolean
-  kolera Boolean
-  giziBuruk Boolean
-  jantung Boolean
-  tbcParuParu Boolean
-  kanker Boolean
-  diabetes Boolean
-  lumpuh Boolean
-  lainnya Boolean
+  muntaber String
+  demamBerdarah String
+  campak String
+  malaria String
+  fluBurung String
+  covid19 String
+  hepatitisB String
+  hepatitisE String
+  difteri String
+  chikungunya String
+  leptospirosis String
+  kolera String
+  giziBuruk String
+  jantung String
+  tbcParuParu String
+  kanker String
+  diabetes String
+  lumpuh String
+  lainnya String
 
   rumahSakit Int
   rumahSakitBersalin Int
@@ -223,16 +224,16 @@ model Kesehatan {
 
   jaminaSosialKesehatan String
 
-  tunanetra Boolean
-  tunarungu Boolean
-  tunawicara Boolean
-  tunarunguWicara Boolean
-  tunadaksa Boolean
-  tunagrahita Boolean
-  tunalaras Boolean
-  cacatKusta Boolean
-  cacatGanda Boolean
-  dipasung Boolean
+  tunanetra String
+  tunarungu String
+  tunawicara String
+  tunarunguWicara String
+  tunadaksa String
+  tunagrahita String
+  tunalaras String
+  cacatKusta String
+  cacatGanda String
+  dipasung String
 
   individu Individu? @relation(fields: [individuId], references: [id])
   individuId Int @unique
